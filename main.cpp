@@ -3,6 +3,8 @@
 #include <clocale>
 #include <limits>
 #include <ctime>
+#include <list>
+#include <windows.h>
 
 using namespace std;
 
@@ -29,14 +31,16 @@ int enter()
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+    //5setlocale(LC_ALL, "Russian");
 
     int a = 1;
 
     
     while (true)
     {
-        cout << "Запустить программу: \n1) вычисляющую разницу между максимальным и минимальным элементами массива \n3)реализующую создание массива произвольного размера, вводимого с клавиатуры. \n4)вычисляющую сумму значений в каждом столбце (или строке) двумерного массива. \n5)осуществляющую поиск среди структур student структуру с заданными параметрами (фамилией, именем и т.д.). \n0)Выйти" << endl;
+        cout << "\nЗапустить программу: \n1) вычисляющую разницу между максимальным и минимальным элементами массива \n3)реализующую создание массива произвольного размера, вводимого с клавиатуры. \n4)вычисляющую сумму значений в каждом столбце (или строке) двумерного массива. \n5)осуществляющую поиск среди структур student структуру с заданными параметрами (фамилией, именем и т.д.). \n0)Выйти" << endl;
         a = enter();
         switch (a)
         {
@@ -77,7 +81,6 @@ int main()
 
         case 3:
         {
-            setlocale(LC_ALL, "Russian");
             int n = 0;
             do
             {
@@ -99,7 +102,7 @@ int main()
             int i = 0;
             while (i < n)
                 printf(" %d", otv[i++]);
-            cin.clear();
+            break;
         }
 
         case 4:
@@ -118,7 +121,7 @@ int main()
             int i = 0;
             while (i < 5)
                 printf(" %d", otv[i++]);
-            cin.clear();
+            break;
         }
 
         case 5:
@@ -129,61 +132,70 @@ int main()
                 string name;
                 string facult;
                 int Nomzach;
-            } stud[3];
+            };
 
-            for (int i = 0; i < 3; i++)
+            student stud;
+            list<student> students;
+
+
+            while (true)
             {
+                cout << "Введите фамилию студента(Чтобы выйти введите #): ";
+                cin >> stud.famil;
+                if (stud.famil == "#") {
+                    break;
+                }
 
-                cout << "Введите фамилию студента: ";
-                cin >> stud[i].famil;
-
-                cout << "Введите имя студента " << stud[i].famil << ": ";
-                cin >> stud[i].name;
+                cout << "Введите имя студента " << stud.famil << ": ";
+                cin >> stud.name;
 
                 cout << "Введите название факультета студента "
-                     << stud[i].famil << " "
-                     << stud[i].name << ": ";
-                cin >> stud[i].facult;
+                     << stud.famil << " "
+                     << stud.name << ": ";
+                cin >> stud.facult;
 
                 cout << "Введите номер зачётной книжки студента "
-                     << stud[i].famil << " "
-                     << stud[i].name << ": ";
-                stud[i].Nomzach = enter();
+                     << stud.famil << " "
+                     << stud.name << ": ";
+                stud.Nomzach = enter();
+
+                students.push_back(stud);
             }
 
             cout << "\nСписок студентов:\n";
 
-            for (int i = 0; i < 3; i++)
+            for (student stu : students)
             {
                 cout << "Студент "
-                     << stud[i].famil << " "
-                     << stud[i].name
+                     << stu.famil << " "
+                     << stu.name
                      << " обучается на факультете "
-                     << stud[i].facult
+                     << stu.facult
                      << ", номер зачётной книжки "
-                     << stud[i].Nomzach
+                     << stud.Nomzach
                      << endl;
             }
 
-            string searchFamil;
+            string search;
 
-            cout << "\nВведите фамилию студента для поиска: ";
-            cin >> searchFamil;
+            cout << "\nВведите данные о студенте для поиска (Формат: Фамилия Имя Факультет Номер_зачётной_книжки): ";
+            cin >> search;
 
             bool found = false;
 
-            for (int i = 0; i < 3; i++)
+            for (student stu : students)
             {
+                string student = stu.famil + " " + stu.name + " " + stu.facult + " " + to_string(stu.Nomzach);
 
-                if (stud[i].famil == searchFamil)
+                if (student.find(search) != std::string::npos)
                 {
 
                     cout << "\nСтудент найден!\n";
-                    cout << "Фамилия: " << stud[i].famil << endl;
-                    cout << "Имя: " << stud[i].name << endl;
-                    cout << "Факультет: " << stud[i].facult << endl;
+                    cout << "Фамилия: " << stu.famil << endl;
+                    cout << "Имя: " << stu.name << endl;
+                    cout << "Факультет: " << stu.facult << endl;
                     cout << "Номер зачётной книжки: "
-                         << stud[i].Nomzach << endl;
+                         << stu.Nomzach << endl;
 
                     found = true;
                 }
@@ -193,7 +205,6 @@ int main()
             {
                 cout << "\nСтудент с такой фамилией не найден." << endl;
             }
-            cin.clear();
 
             break;
         }
